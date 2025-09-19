@@ -71,19 +71,10 @@ export async function createSingleReviewPdf(data) {
 
     let browser = null;
     try {
-        // ★★★ هذا هو التعديل الأساسي والمهم لحل المشكلة ★★★
+        // ★★★ تم حذف سطر executablePath من هنا تماماً ★★★
         browser = await puppeteer.launch({
             headless: true,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--disable-accelerated-2d-canvas',
-                '--no-first-run',
-                '--no-zygote',
-                '--single-process',
-                '--disable-gpu'
-            ]
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
         const page = await browser.newPage();
         await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
