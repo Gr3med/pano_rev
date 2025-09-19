@@ -71,11 +71,19 @@ export async function createSingleReviewPdf(data) {
 
     let browser = null;
     try {
-        // ★★★ هذا هو التعديل الأساسي لحل المشكلة ★★★
+        // ★★★ هذا هو التعديل الأساسي والمهم لحل المشكلة ★★★
         browser = await puppeteer.launch({
             headless: true,
-            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--single-process',
+                '--disable-gpu'
+            ]
         });
         const page = await browser.newPage();
         await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
