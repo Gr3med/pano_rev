@@ -1,0 +1,65 @@
+import pkg from 'whatsapp-web.js';
+const { Client, LocalAuth, MessageMedia } = pkg;
+import qrcode from 'qrcode-terminal';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+let client;
+let isClientReady = false;
+
+export function initializeWhatsAppClient() {
+    console.log('Initializing WhatsApp client...');
+    
+    client = new Client({
+        authStrategy: new LocalAuth(), // سيحاول حفظ الجلسة محلياً (ستفقد في Render)
+        puppeteer: {
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        }
+    });
+
+    client.on('qr', (qr) => {
+        console.log('--- [WhatsApp QR Code] ---');
+        console.log('Scan this code with your WhatsApp app.');
+        qrcode.generate(qr, { small: true });
+        console.log('-------------------------');
+    });
+
+    client.on('ready', () => {
+        isClientReady = true;
+        console.log('✅ WhatsApp client is ready!');
+    });
+
+    client.on('auth_failure', msg => {
+        console.error('❌ WhatsApp AUTHENTICATION FAILURE', msg);
+    });
+
+    client.on('disconnected', (reason) => {
+        console.log('Client was logged out', reason);
+        isClientReady = false;
+    });
+
+    client.initialize();
+}
+
+export async function sendWhatsappPdf(pdfBuffer, fileName, caption) {
+    if (!isClientReady) {
+        console.warn("⚠️ WhatsApp client is not ready. Skipping message.");
+        return;
+    }
+    const recipient = process.env.WHATSAPP_RECIPIENT_NUMBER;
+    if (!recipient) {
+        console.warn("⚠️ WHATSAPP_RECIPIENT_NUMBER not set in .env file. Skipping message.");
+        return;
+    }
+
+    try {
+        const media = new MessageMedia('application/pdf', pdfBuffer.toString('base64'), fileName);
+        const chatId = `${recipient}@c.us`;
+        await client.sendMessage(chatId, media, { caption: caption });
+        console.log(`✅ WhatsApp report sent successfully to ${recipient}`);
+    } catch (error) {
+        console.error(`❌ Failed to send WhatsApp message to ${recipient}:`, error);
+    }
+}

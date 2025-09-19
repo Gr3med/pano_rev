@@ -1,0 +1,21 @@
+{
+  "name": "panorama-hotel-app-postgres",
+  "version": "1.0.0",
+  "description": "نظام تقييمات فندق بانوراما مع PostgreSQL",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "run-monthly-report": "node monthlyReportJob.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pg": "^8.11.5",
+    "nodemailer": "^6.9.13",
+    "puppeteer": "^22.10.0",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.23.0"
+  }
+}
