@@ -1,12 +1,11 @@
 {
-  "name": "panorama-hotel-app-final",
+  "name": "panorama-hotel-review-system",
   "version": "1.0.0",
-  "description": "نظام تقييمات فندق بانوراما مع PostgreSQL",
+  "description": "نظام تقييمات فندق بانوراما الأصلي والمعدل لـ Render",
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "run-monthly-report": "node monthlyReportJob.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
