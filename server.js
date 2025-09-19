@@ -26,7 +26,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.post('/api/review', async (req, res) => {
     const data = req.body;
     
-    // تم تعديل الاستعلام لـ PostgreSQL
     const query = `
         INSERT INTO reviews (date, floor, roomNumber, guestName, guestPhone, email, 
         internet, maintenance, reception, bathroom, laundry, security, 
