@@ -15,7 +15,7 @@ export function initializeWhatsAppClient() {
         authStrategy: new LocalAuth({ dataPath: 'whatsapp_session' }),
         puppeteer: {
             headless: true,
-            // ★★★ تم حذف executablePath وإبقاء الإعدادات المهمة فقط ★★★
+            // ★★★ تم التأكد من حذف executablePath تماماً ★★★
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
