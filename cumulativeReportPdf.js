@@ -1,9 +1,9 @@
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core'; // ★★★ تم التعديل لاستخدام النسخة الخفيفة ★★★
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// ... (الدوال المساعدة تبقى كما هي) ...
+// الدوال المساعدة
 const getRatingText = (r) => ({5: 'ممتاز', 3: 'جيد', 1: 'ضعيف'}[parseInt(r, 10)] || '-');
 const getRatingColor = (r) => ({5: '#28a745', 3: '#ffc107', 1: '#dc3545'}[parseInt(r, 10)] || '#6c757d');
 const getAvgRatingText = (avg) => { const s = parseFloat(avg); if (s >= 4) return 'ممتاز'; if (s >= 2.5) return 'جيد'; if (s > 0) return 'ضعيف'; return '-'; };
@@ -15,9 +15,8 @@ export async function createCumulativePdfReport(stats, recentReviews) {
     const logoUri = `data:image/jpeg;base64,${logoBase64}`;
     const today = new Date().toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    // ... (كود بناء HTML يبقى كما هو) ...
     const reviewsHtml = recentReviews.map(review => {
-        const suggestionsHtml = review.suggestions ? `<tr><td colspan="10" class="comments-cell"><strong>مقترحات:</strong> ${review.suggestions}</td></tr>` : ''
+        const suggestionsHtml = review.suggestions ? `<tr><td colspan="10" class="comments-cell"><strong>مقترحات:</strong> ${review.suggestions}</td></tr>` : '';
         return `
         <div class="review-block">
             <table class="guest-info-table">
@@ -50,7 +49,9 @@ export async function createCumulativePdfReport(stats, recentReviews) {
             </table>
         </div>`;
     }).join('');
-    const htmlContent = ` <!DOCTYPE html>
+    
+    const htmlContent = `
+    <!DOCTYPE html>
     <html lang="ar" dir="rtl">
     <head>
         <meta charset="UTF-8">
@@ -110,14 +111,14 @@ export async function createCumulativePdfReport(stats, recentReviews) {
             <div class="section-title">عينة من تقييمات الشهر</div>
             ${reviewsHtml}
         </div>
-    </body></html>`; // كود HTML الكامل هنا
+    </body></html>`;
 
     let browser = null;
-    et browser = null;
     try {
-        // ★★★ تم حذف executablePath وإبقاء الإعدادات المهمة فقط ★★★
+        // ★★★ تم التعديل لاستخدام المتصفح المثبت على الخادم ★★★
         browser = await puppeteer.launch({
             headless: true,
+            channel: 'chrome',
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
@@ -136,4 +137,3 @@ export async function createCumulativePdfReport(stats, recentReviews) {
         if (browser) await browser.close();
     }
 }
-
