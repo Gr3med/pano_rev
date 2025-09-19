@@ -9,13 +9,15 @@ let client;
 let isClientReady = false;
 
 export function initializeWhatsAppClient() {
-    console.log('Initializing WhatsApp client...');
+    console.log('Initializing WhatsApp client with puppeteer-core...');
     
     client = new Client({
         authStrategy: new LocalAuth({ dataPath: 'whatsapp_session' }),
         puppeteer: {
             headless: true,
-            // ★★★ تم التأكد من حذف executablePath تماماً ★★★
+            // ★★★ هذا هو التعديل الجديد والمهم ★★★
+            // channel: 'chrome' يخبر المكتبة باستخدام المتصفح المثبت بدلاً من تحميل واحد جديد
+            channel: 'chrome',
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
