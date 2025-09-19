@@ -113,11 +113,17 @@ export async function createCumulativePdfReport(stats, recentReviews) {
     </body></html>`; // كود HTML الكامل هنا
 
     let browser = null;
+    et browser = null;
     try {
-        // ★★★ تم حذف سطر executablePath من هنا تماماً ★★★
+        // ★★★ تم حذف executablePath وإبقاء الإعدادات المهمة فقط ★★★
         browser = await puppeteer.launch({
             headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-gpu'
+            ]
         });
         const page = await browser.newPage();
         await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
@@ -130,3 +136,4 @@ export async function createCumulativePdfReport(stats, recentReviews) {
         if (browser) await browser.close();
     }
 }
+
