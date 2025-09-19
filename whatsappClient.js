@@ -15,10 +15,12 @@ export function initializeWhatsAppClient() {
         authStrategy: new LocalAuth({ dataPath: 'whatsapp_session' }),
         puppeteer: {
             headless: true,
-            // ★★★ تم حذف سطر executablePath من هنا تماماً ★★★
+            // ★★★ تم حذف executablePath وإبقاء الإعدادات المهمة فقط ★★★
             args: [
                 '--no-sandbox',
-                '--disable-setuid-sandbox'
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-gpu'
             ]
         }
     });
