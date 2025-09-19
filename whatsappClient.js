@@ -12,16 +12,17 @@ export function initializeWhatsAppClient() {
     console.log('Initializing WhatsApp client...');
     
     client = new Client({
-        authStrategy: new LocalAuth(), // سيحاول حفظ الجلسة محلياً (ستفقد في Render)
+        authStrategy: new LocalAuth({ dataPath: 'whatsapp_session' }),
         puppeteer: {
             headless: true,
+            // ★★★ هذا هو التعديل الأساسي لحل المشكلة ★★★
+            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         }
     });
 
     client.on('qr', (qr) => {
         console.log('--- [WhatsApp QR Code] ---');
-        console.log('Scan this code with your WhatsApp app.');
         qrcode.generate(qr, { small: true });
         console.log('-------------------------');
     });
@@ -36,8 +37,9 @@ export function initializeWhatsAppClient() {
     });
 
     client.on('disconnected', (reason) => {
-        console.log('Client was logged out', reason);
+        console.log('WhatsApp client was logged out', reason);
         isClientReady = false;
+        client.initialize();
     });
 
     client.initialize();
@@ -50,7 +52,7 @@ export async function sendWhatsappPdf(pdfBuffer, fileName, caption) {
     }
     const recipient = process.env.WHATSAPP_RECIPIENT_NUMBER;
     if (!recipient) {
-        console.warn("⚠️ WHATSAPP_RECIPIENT_NUMBER not set in .env file. Skipping message.");
+        console.warn("⚠️ WHATSAPP_RECIPIENT_NUMBER not set. Skipping message.");
         return;
     }
 
