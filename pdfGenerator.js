@@ -152,7 +152,7 @@ async function createCumulativePdfReport(stats, recentReviews, logoDataUri) {
     try {
 browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
         const page = await browser.newPage();
-        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
         const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true, margin: { top: '20px', right: '20px', bottom: '20px', left: '20px' } });
         return { pdfBuffer, emailHtmlContent };
     } catch (error) {
@@ -164,4 +164,5 @@ browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--dis
 }
 
 // ★★★ تم التعديل هنا ليتوافق مع ES Modules المستخدمة في server.js ★★★
+
 export { createCumulativePdfReport };
