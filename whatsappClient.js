@@ -9,15 +9,24 @@ let client;
 let isClientReady = false;
 
 export function initializeWhatsAppClient() {
-    console.log('Initializing WhatsApp client...');
+    console.log('Initializing WhatsApp client with resource-saving arguments...');
     
     client = new Client({
         authStrategy: new LocalAuth({ dataPath: 'whatsapp_session' }),
         puppeteer: {
             headless: true,
-            // ★★★ هذا هو التعديل الأساسي لحل المشكلة ★★★
-            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
+            // ★★★ هذا هو التعديل الأساسي والمهم لحل المشكلة ★★★
+            // هذه الخيارات مصممة لبيئات التشغيل المحدودة مثل Render
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage', // مهم جداً لخوادم Docker/Render
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--single-process', // قد لا يكون مثالياً لكنه يوفر الذاكرة
+                '--disable-gpu'
+            ]
         }
     });
 
